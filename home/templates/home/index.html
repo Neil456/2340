@@ -133,25 +133,54 @@ background: #131313;
 
 
     <!-- Trending Movies -->
-    <section class="trending">
-        <h2 style="padding-bottom: 30px;">Our Collection</h2>
-        <div class="movie-grid">
-            {% for movie in movies %}
-            <div class="movie-card">
-                {% if movie.image %}
-                    <img src="{{ movie.image.url }}" alt="{{ movie.name }}">
-                {% else %}
-                    <p>No image available</p>
-                {% endif %}
-                <h3>{{ movie.name }}</h3>
-                <p>${{ movie.price }}</p>
-                <a href="{% url 'movies.show' id=movie.id %}">View Details</a>
-            </div>
-            {% empty %}
-            <p>No movies available.</p>
-            {% endfor %}
+<!-- Trending Movies -->
+<section class="trending">
+    <h2>Our Collection</h2>
+    <div class="movie-grid">
+        {% for movie in movies %}
+        <div class="movie-card">
+            {% if movie.image %}
+                <img src="{{ movie.image.url }}" alt="{{ movie.name }}">
+            {% else %}
+                <p>No image available</p>
+            {% endif %}
+            <h3>{{ movie.name }}</h3>
+            <p>${{ movie.price }}</p>
+            <a href="{% url 'movies.show' id=movie.id %}">View Details</a>
         </div>
-    </section>
+        {% empty %}
+        <p>No movies available.</p>
+        {% endfor %}
+    </div>
 
+    <!-- Explore Our Collection Button -->
+    <div class="explore-button-container">
+        <a href="{% url 'movies.index' %}" class="explore-button">Explore Our Collection</a>
+    </div>
+</section>
+
+<style>
+    .explore-button-container {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .explore-button {
+        display: inline-block;
+        padding: 12px 20px;
+        background: gold;
+        color: black;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 16px;
+        transition: background 0.3s ease-in-out;
+
+    }
+
+    .explore-button:hover {
+        background: #ffd700;
+    }
+</style>
 
 {% endblock content %}
