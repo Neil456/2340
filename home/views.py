@@ -1,9 +1,22 @@
+from movies.models import Movie
+
 from django.shortcuts import render
+
+
+
 def index(request):
-    template_data = {}
-    template_data['title'] = 'GT Movies Store'
-    return render(request, 'home/index.html', {
-        'template_data': template_data})
+    movies = Movie.objects.all()  # Retrieve all movies from the database
+    template_data = {
+        'title': 'GT Movies Store',
+        'movies': movies  # Pass movies to the template
+    }
+
+    print(template_data)
+
+
+    return render(request, 'home/index.html', template_data)
+
+
 def about(request):
     template_data = {}
     template_data['title'] = 'About'
