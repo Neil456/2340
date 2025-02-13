@@ -1,43 +1,179 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+
 <div class="p-3">
   <div class="container">
     <div class="row mt-3">
       <div class="col mx-auto mb-3">
-        <h2>List of Movies</h2>
+        <h2>Our Movie Collection</h2>
         <hr />
         <p class="card-text">
-          <form method="GET">
-            <div class="row">
-              <div class="col-auto">
-                <div class="input-group col-auto">
-                  <div class="input-group-text">Search</div>
-                  <input type="text" class="form-control" name="search">
-                </div>
-              </div>
-              <div class="col-auto">
-                <button class="btn bg-dark text-white" type="submit">Search</button>
-              </div>
-            </div>
-          </form>
+<!-- Search Bar -->
+<form method="GET" class="search-form">
+    <div class="search-container">
+        <input type="text" class="search-input" name="search" placeholder="Search for movies...">
+        <button type="submit" class="search-button">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+</form>
+
+<!-- 🎨 CSS Styling -->
+<style>
+  /* Centering the Search Bar */
+  .search-form {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+  }
+
+  /* Search Bar Container */
+  .search-container {
+      display: flex;
+      align-items: center;
+      background: #222;
+      border-radius: 30px;
+      padding: 5px;
+      box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+  }
+
+  /* Search Input */
+  .search-input {
+      border: none;
+      background: transparent;
+      padding: 12px 15px;
+      width: 250px;
+      font-size: 16px;
+      color: white;
+      border-radius: 30px;
+      outline: none;
+  }
+
+  /* Placeholder Text */
+  .search-input::placeholder {
+      color: #bbb;
+  }
+
+  /* Search Button */
+  .search-button {
+      background: gold;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.3s ease-in-out;
+  }
+
+  .search-button i {
+      font-size: 16px;
+      color: black;
+  }
+
+  .search-button:hover {
+      background: #ffd700;
+  }
+</style>
+
         </p>
       </div>
     </div>
-    <div class="row">
+
+    <!-- Movie Grid -->
+    <div class="movie-grid">
       {% for movie in template_data.movies %}
-      <div class="col-md-4 col-lg-3 mb-2">
-        <div class="p-2 card align-items-center pt-4">
-          <img src="{{ movie.image.url }}" class="card-img-top rounded img-card-200">
-          <div class="card-body text-center">
-            <a href="{% url 'movies.show' id=movie.id %}" class="btn bg-dark text-white">
-              {{ movie.name }}
-            </a>
-          </div>
-        </div>
+      <div class="movie-card">
+        {% if movie.image %}
+          <img src="{{ movie.image.url }}" alt="{{ movie.name }}">
+        {% else %}
+          <p>No image available</p>
+        {% endif %}
+        <h3>{{ movie.name }}</h3>
+        <p>${{ movie.price }}</p>
+        <a href="{% url 'movies.show' id=movie.id %}">View Details</a>
       </div>
+      {% empty %}
+      <p>No movies available.</p>
       {% endfor %}
     </div>
   </div>
 </div>
+
+<!-- 🎨 CSS Styling -->
+<style>
+
+    body {
+      background: black;
+      color: white;
+  }
+  .movie-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 1200px;
+      width: 100%;
+      margin: auto;
+      margin-top: 20px;
+  }
+
+  .movie-card {
+      background: #222;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s ease-in-out;
+      width: 100%;
+      max-width: 220px; /* Same as index page */
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .movie-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(255, 255, 255, 0.15);
+  }
+
+  .movie-card img {
+      width: 100%;
+      height: auto;
+      max-height: 280px;
+      border-radius: 10px;
+      object-fit: cover;
+  }
+
+  .movie-card h3 {
+      font-size: 16px;
+      margin-top: 8px;
+      font-weight: 600;
+      color: #f1f1f1;
+  }
+
+  .movie-card p {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 8px;
+  }
+
+  .movie-card a {
+      display: inline-block;
+      padding: 10px 12px;
+      background: gold;
+      color: black;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      margin-top: auto;
+      transition: background 0.3s ease-in-out;
+  }
+
+  .movie-card a:hover {
+      background: #ffd700;
+  }
+</style>
+
 {% endblock content %}

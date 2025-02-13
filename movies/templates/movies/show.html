@@ -1,91 +1,232 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<div class="p-3">
-  <div class="container">
-    <div class="row mt-3">
-      <div class="col-md-6 mx-auto mb-3">
-        <h2>{{ template_data.movie.name }}</h2>
-        <hr />
-        <p><b>Description:</b> {{ template_data.movie.description }}</p>
-        <p><b>Price:</b> ${{ template_data.movie.price }}</p>
-        <p class="card-text">
-          <form method="post" action="{% url 'cart.add' id=template_data.movie.id %}">
-            <div class="row">
-              {% csrf_token %}
-              <div class="col-auto">
-                <div class="input-group col-auto">
-                  <div class="input-group-text">Quantity
-                    </div>
-                  <input type="number" min="1" max="10"
-                    class="form-control quantity-input"
-                    name="quantity" value="1">
-                </div>
-              </div>
-              <div class="col-auto">
-                <button class="btn bg-dark text-white"
-                  type="submit">Add to cart</button>
-              </div>
-            </div>
-          </form>
-        </p>
-        <h2>Reviews</h2>
-        <hr />
-        <ul class="list-group">
-          {% for review in template_data.reviews %}
-          <li class="list-group-item pb-3 pt-3">
-            <h5 class="card-title">
-              Review by {{ review.user.username }}
-            </h5>
-            <h6 class="card-subtitle mb-2 text-muted">
-              {{ review.date }}
-            </h6>
-            <p class="card-text">{{ review.comment }}</p>
-            {% if user.is_authenticated and user == review.user %}
-            <a class="btn btn-primary"
-              href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">
-              Edit
-            </a>
-            <a class="btn btn-danger"
-              href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">
-              Delete
-            </a>
-            {% endif %}
-          </li>
-          {% endfor %}
-        </ul>
 
-        {% if user.is_authenticated %}
-        <div class="container mt-4">
-          <div class="row justify-content-center">
-            <div class="col-12">
-              <div class="card shadow p-3 mb-4 rounded">
-                <div class="card-body">
-                  <b class="text-start">Create a review</b><br /><br />
-                  <form method="POST" action="{% url 'movies.create_review' id=template_data.movie.id %}">
-                    {% csrf_token %}
-                    <p>
-                      <label for="comment">Comment:</label>
-                      <textarea name="comment" required class="form-control" id="comment"></textarea>
-                    </p>
+<div class="movie-detail-container">
+  <div class="movie-detail">
+    <!-- Movie Image -->
+    <div class="movie-image">
+      <img src="{{ template_data.movie.image.url }}" alt="{{ template_data.movie.name }}">
+    </div>
 
-                    <div class="text-center">
-                      <button type="submit" class="btn bg-dark text-white">
-                        Add Review
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
+    <!-- Movie Info -->
+    <div class="movie-info">
+      <h2>{{ template_data.movie.name }}</h2>
+      <hr />
+      <p><b>Description:</b> {{ template_data.movie.description }}</p>
+      <p><b>Price:</b> ${{ template_data.movie.price }}</p>
+
+      <!-- Add to Cart Form -->
+      <form method="post" action="{% url 'cart.add' id=template_data.movie.id %}" class="cart-form">
+        {% csrf_token %}
+        <div class="quantity-container">
+          <label for="quantity">Quantity:</label>
+          <input type="number" min="1" max="10" class="quantity-input" name="quantity" value="1">
         </div>
-        {% endif %}
-      </div>
-      <div class="col-md-6 mx-auto mb-3 text-center">
-        <img src="{{ template_data.movie.image.url }}" class="rounded img-card-400" />
-      </div>
+        <button class="button gold-button" type="submit">Add to Cart</button>
+      </form>
     </div>
   </div>
+
+  <!-- Reviews Section -->
+  <div class="reviews-section">
+    <h2>Reviews</h2>
+    <hr />
+    <ul class="review-list">
+      {% for review in template_data.reviews %}
+      <li class="review-item">
+        <h5>Review by {{ review.user.username }}</h5>
+        <h6 class="text-muted">{{ review.date }}</h6>
+        <p>{{ review.comment }}</p>
+        {% if user.is_authenticated and user == review.user %}
+        <div class="review-actions">
+          <a class="button primary-button"
+            href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">
+            Edit
+          </a>
+          <a class="button danger-button"
+            href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">
+            Delete
+          </a>
+        </div>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+
+    <!-- Add Review Section -->
+    {% if user.is_authenticated %}
+    <div class="add-review">
+      <h3>Create a Review</h3>
+      <form method="POST" action="{% url 'movies.create_review' id=template_data.movie.id %}">
+        {% csrf_token %}
+        <label for="comment">Comment:</label>
+        <textarea name="comment" required class="review-textarea" id="comment"></textarea>
+        <button type="submit" class="button gold-button">Add Review</button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
 </div>
+
+<!-- 🎨 CSS Styling -->
+<style>
+  /* Global Page Styling */
+  body {
+      background: black;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+  }
+
+  .movie-detail-container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 40px;
+  }
+
+  .movie-detail {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      flex-wrap: wrap;
+  }
+
+  /* Movie Image */
+  .movie-image img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+  }
+
+  /* Movie Info */
+  .movie-info {
+      max-width: 50%;
+  }
+
+  .movie-info h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+  }
+
+  .movie-info p {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #ccc;
+  }
+
+  /* Quantity & Add to Cart */
+  .cart-form {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 10px;
+  }
+
+  .quantity-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+  }
+
+  .quantity-input {
+      width: 60px;
+      padding: 8px;
+      text-align: center;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+  }
+
+  /* Buttons */
+  .button {
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.3s ease-in-out;
+      cursor: pointer;
+  }
+
+  .gold-button {
+      background: gold;
+      color: black;
+      border: none;
+  }
+
+  .gold-button:hover {
+      background: #ffd700;
+  }
+
+  .primary-button {
+      background: #1e90ff;
+      color: white;
+      border: none;
+  }
+
+  .primary-button:hover {
+      background: #0073e6;
+  }
+
+  .danger-button {
+      background: #dc3545;
+      color: white;
+      border: none;
+  }
+
+  .danger-button:hover {
+      background: #c82333;
+  }
+
+  /* Reviews */
+  .reviews-section {
+      margin-top: 40px;
+  }
+
+  .review-list {
+      list-style: none;
+      padding: 0;
+  }
+
+  .review-item {
+      background: #222;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+  }
+
+  .review-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+  }
+
+  /* Add Review */
+  .add-review {
+      margin-top: 30px;
+      padding: 20px;
+      background: #222;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+  }
+
+  .add-review h3 {
+      margin-bottom: 10px;
+  }
+
+  .review-textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #111;
+      color: white;
+  }
+
+</style>
+
 {% endblock content %}

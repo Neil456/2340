@@ -2,49 +2,150 @@
 {% block content %}
 {% load static %}
 {% load cart_filters %}
-<div class="p-3">
-  <div class="container">
-    <div class="row mt-3">
-      <div class="col mx-auto mb-3">
-        <h2>Shopping Cart</h2>
-        <hr />
-      </div>
-    </div>
-    <div class="row m-1">
-      <table class="table table-bordered table-striped text-center">
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for movie in template_data.movies_in_cart %}
-          <tr>
-            <td>{{ movie.id }}</td>
-            <td>{{ movie.name }}</td>
-            <td>${{ movie.price }}</td>
-            <td>{{ request.session.cart|get_quantity:movie.id }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="row">
-      <div class="text-end">
-        <a class="btn btn-outline-secondary mb-2"><b>Total to pay:</b> ${{ template_data.cart_total }}</a>
-        {% if template_data.movies_in_cart|length > 0 %}
-        <a href="{% url 'cart.purchase' %}" class="btn bg-dark text-white mb-2">Purchase</a>
-        <a href="{% url 'cart.clear' %}">
-          <button class="btn btn-danger mb-2">
-            Remove all movies from Cart
-          </button>
-        </a>
-        {% endif %}
-      </div>
-    </div>
+
+<div class="cart-container">
+  <h2>Shopping Cart</h2>
+  <hr />
+
+  <!-- Shopping Cart Table -->
+  <div class="cart-table-container">
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Movie</th>
+          <th>Price</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for movie in template_data.movies_in_cart %}
+        <tr>
+          <td>{{ movie.id }}</td>
+          <td>{{ movie.name }}</td>
+          <td>${{ movie.price }}</td>
+          <td>{{ request.session.cart|get_quantity:movie.id }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="empty-cart">Your cart is empty.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Cart Summary & Buttons -->
+  <div class="cart-summary">
+    <span class="cart-total"><b>Total to pay:</b> ${{ template_data.cart_total }}</span>
+
+    {% if template_data.movies_in_cart|length > 0 %}
+      <a href="{% url 'cart.purchase' %}" class="button gold-button">Purchase</a>
+      <a href="{% url 'cart.clear' %}" class="button danger-button">Remove all movies</a>
+    {% endif %}
   </div>
 </div>
+
+<!-- 🎨 CSS Styling -->
+<style>
+  /* Black Background */
+  body {
+      background: black;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+  }
+
+  .cart-container {
+      max-width: 900px;
+      margin: auto;
+      padding: 40px;
+      text-align: center;
+  }
+
+  h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+  }
+
+  /* Cart Table */
+  .cart-table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+  }
+
+  .cart-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #222;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+  }
+
+  .cart-table th, .cart-table td {
+      padding: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+  }
+
+  .cart-table th {
+      background: #333;
+      color: white;
+  }
+
+  .cart-table tr:last-child td {
+      border-bottom: none;
+  }
+
+  .empty-cart {
+      padding: 20px;
+      color: #bbb;
+      font-style: italic;
+  }
+
+  /* Cart Summary */
+  .cart-summary {
+      margin-top: 30px;
+  }
+
+  .cart-total {
+      font-size: 18px;
+      margin-bottom: 15px;
+      display: block;
+  }
+
+  /* Buttons */
+  .button {
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.3s ease-in-out;
+      cursor: pointer;
+      margin: 5px;
+  }
+
+  .gold-button {
+      background: gold;
+      color: black;
+      border: none;
+  }
+
+  .gold-button:hover {
+      background: #ffd700;
+  }
+
+  .danger-button {
+      background: #dc3545;
+      color: white;
+      border: none;
+  }
+
+  .danger-button:hover {
+      background: #c82333;
+  }
+</style>
+
 {% endblock content %}
