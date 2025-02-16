@@ -48,3 +48,49 @@
   width: fit-content;
   max-height: 400px;
 }
+
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 450px;
+    width: 200px;
+    background: #222;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.movie-card img {
+    height: 250px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.movie-title {
+    font-size: 18px;
+    font-weight: bold;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.movie-price {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.view-details {
+    height: 40px;
+    width: 90%;
+    background-color: yellow;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
